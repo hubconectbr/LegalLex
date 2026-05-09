@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lex | LegalTech Eleitoral</title>
+    <title>Lex | Inteligência Processual Premium</title>
     
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
@@ -12,291 +12,305 @@
         :root {
             --azul-tse: #0f172a;
             --azul-claro: #1e293b;
-            --destaque: #3b82f6;
+            --destaque: #2563eb;
             --verde-sucesso: #10b981;
             --cinza-fundo: #f8fafc;
+            --cinza-borda: #e2e8f0;
             --branco: #ffffff;
+            --terminal-bg: #020617;
+            --terminal-text: #22c55e;
         }
 
-        body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--cinza-fundo); margin: 0; padding: 20px; color: #334155; }
-        .container { max-width: 1100px; margin: 0 auto; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--cinza-fundo); margin: 0; padding: 20px; color: #334155; line-height: 1.5; }
+        .container { max-width: 900px; margin: 0 auto; } 
         
-        .header { background: var(--azul-tse); color: white; padding: 25px; border-radius: 12px 12px 0 0; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .header h1 { margin: 0; font-size: 28px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 10px;}
-        .header p { color: #94a3b8; margin: 5px 0 0 0; font-size: 14px; }
+        .header { background: linear-gradient(135deg, var(--azul-tse), var(--azul-claro)); color: white; padding: 30px 20px; border-radius: 16px 16px 0 0; text-align: center; }
+        .header h1 { margin: 0; font-size: 26px; font-weight: 700; letter-spacing: -0.5px; }
 
-        .tabs { display: flex; background: var(--azul-claro); border-bottom: 2px solid var(--destaque); }
-        .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: #cbd5e1; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 15px; text-transform: uppercase; }
-        .tab-btn:hover { background: rgba(255,255,255,0.05); color: white; }
-        .tab-btn.active { background: var(--destaque); color: white; }
+        .tabs { display: flex; background: #fff; border-bottom: 1px solid var(--cinza-borda); }
+        .tab-btn { flex: 1; padding: 16px; border: none; background: transparent; color: #64748b; font-weight: 600; cursor: pointer; font-size: 14px; transition: 0.2s; border-bottom: 2px solid transparent; }
+        .tab-btn:hover { color: var(--destaque); }
+        .tab-btn.active { color: var(--destaque); border-bottom-color: var(--destaque); }
 
-        .card { background: var(--branco); padding: 30px; border-radius: 0 0 12px 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card { background: var(--branco); padding: 40px; border-radius: 0 0 16px 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); }
         
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;}
-        label { font-weight: 600; color: var(--azul-tse); display: block; margin-bottom: 8px; font-size: 13px; text-transform: uppercase; }
-        input[type="text"], input[type="password"], textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px; font-size: 14px; box-sizing: border-box; background: #fff; transition: 0.3s; }
-        input:focus, textarea:focus { outline: none; border-color: var(--destaque); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
+        .input-group { margin-bottom: 24px; }
+        label { font-weight: 600; color: var(--azul-tse); display: block; margin-bottom: 8px; font-size: 13px; }
+        input[type="text"], input[type="password"], textarea, select { width: 100%; border: 1px solid var(--cinza-borda); border-radius: 8px; padding: 14px; font-size: 14px; box-sizing: border-box; background: #fafafa; transition: 0.2s; color: #1e293b; font-family: inherit; }
+        input:focus, textarea:focus, select:focus { outline: none; border-color: var(--destaque); background: #fff; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
         
-        /* Estilo para input de arquivo */
-        .file-upload { display: block; width: 100%; border: 2px dashed #cbd5e1; padding: 20px; text-align: center; background: #f8fafc; border-radius: 8px; cursor: pointer; color: #64748b; font-weight: bold; transition: 0.3s; margin-bottom: 10px; box-sizing: border-box;}
-        .file-upload:hover { border-color: var(--destaque); background: #eff6ff; color: var(--destaque); }
+        .btn-upload { display: inline-flex; align-items: center; gap: 8px; background: #fff; border: 1px solid var(--cinza-borda); color: #475569; padding: 10px 16px; border-radius: 20px; font-size: 13px; font-weight: 500; cursor: pointer; transition: 0.2s; }
+        .btn-upload:hover { border-color: var(--destaque); color: var(--destaque); background: #eff6ff; }
         input[type="file"] { display: none; }
-
-        .btn-analisar { background: var(--destaque); color: white; border: none; padding: 16px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3); }
-        .btn-analisar:hover { background: #2563eb; transform: translateY(-2px); }
-
-        .tab-content { display: none; animation: fadeIn 0.5s; }
-        .tab-content.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .checklist-container { display: none; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
-        .checklist-title { font-weight: bold; color: var(--azul-tse); margin-bottom: 15px; border-bottom: 2px solid var(--destaque); display: inline-block; padding-bottom: 5px; }
-        .checklist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-        .check-item { display: flex; align-items: center; font-size: 13px; color: #475569; padding: 10px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; transition: 0.3s; }
-        .check-item.ativo { background: #ecfdf5; border-color: var(--verde-sucesso); color: #065f46; font-weight: 600; }
-
-        .resultado-card { display: none; background: white; padding: 35px; border-radius: 12px; border-left: 8px solid var(--destaque); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
-        .resultado-texto { font-size: 15px; line-height: 1.7; color: #334155; }
-        .resultado-texto h2 { color: var(--azul-tse); border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; margin-top: 30px; font-size: 20px; }
-        .resultado-texto h3 { color: var(--destaque); margin-top: 20px; font-size: 17px; }
         
-        .loading { display: none; text-align: center; padding: 20px; color: var(--destaque); font-weight: bold; background: #eff6ff; border-radius: 8px; margin-top: 20px; border: 1px dashed #bfdbfe; }
+        .tags-container { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .file-tag { background: #f1f5f9; border: 1px solid var(--cinza-borda); color: #475569; font-size: 12px; padding: 4px 12px; border-radius: 12px; display: flex; align-items: center; gap: 6px; }
+        .file-tag .status { width: 8px; height: 8px; background: var(--verde-sucesso); border-radius: 50%; }
+
+        .btn-analisar { background: var(--azul-tse); color: white; border: none; padding: 16px; width: 100%; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 15px; margin-top: 10px; transition: 0.3s; box-shadow: 0 4px 12px rgba(15, 23, 42, 0.15); }
+        .btn-analisar:hover { background: var(--destaque); transform: translateY(-1px); box-shadow: 0 6px 15px rgba(37, 99, 235, 0.25); }
+
+        .tab-content { display: none; animation: fadeIn 0.4s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .terminal-container { display: none; background: var(--terminal-bg); color: var(--terminal-text); font-family: 'SFMono-Regular', Consolas, monospace; padding: 20px; border-radius: 12px; margin-top: 24px; height: 160px; overflow-y: auto; font-size: 13px; line-height: 1.6; }
+        .blinking-cursor { animation: blink 1s step-end infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .resultado-card { display: none; background: white; padding: 40px; border-radius: 16px; border-top: 6px solid var(--destaque); box-shadow: 0 10px 30px rgba(0,0,0,0.08); margin-top: 24px; font-size: 15px; line-height: 1.7; color: #334155; }
+        .resultado-card h2 { color: var(--azul-tse); border-bottom: 1px solid var(--cinza-borda); padding-bottom: 10px; margin-top: 30px; font-size: 18px; }
+        .resultado-card h3 { color: var(--destaque); margin-top: 20px; font-size: 16px; }
+        
+        .flex-row { display: flex; gap: 20px; }
+        .flex-1 { flex: 1; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>⚖️ LEX PLATFORM</h1>
-        <p>Inteligência Artificial Aplicada ao Direito Eleitoral - Ciclo 2026</p>
+        <h1>LEX PLATFORM</h1>
     </div>
 
     <div class="tabs">
-        <button class="tab-btn active" onclick="mudarAba('aba-pedagogica', this)">📚 Avaliação de Cursistas</button>
-        <button class="tab-btn" onclick="mudarAba('aba-processos', this)">🔎 Análise de Processos (AIJE/AIME)</button>
+        <button class="tab-btn active" onclick="mudarAba('aba-pedagogica', this)">📚 Avaliação Pedagógica</button>
+        <button class="tab-btn" onclick="mudarAba('aba-processos', this)">🔎 Auditoria Processual</button>
     </div>
 
     <div class="card">
-        <div class="grid">
-            <div>
-                <label>🔑 API Key (Google AI Studio):</label>
-                <input type="password" id="apiKey" placeholder="Insira sua chave de acesso...">
+        <div class="flex-row">
+            <div class="input-group flex-1">
+                <label>🔑 API Key (Google AI):</label>
+                <input type="password" id="apiKey" placeholder="Sua chave de autenticação...">
             </div>
-            <div>
-                <label>📁 Base Normativa Local / TRE:</label>
-                <input type="text" id="contexto" placeholder="Ex: TRE-SP. Resolução TSE 23.610.">
+            <div class="input-group flex-1">
+                <label>🎯 Precedentes / Contexto:</label>
+                <input type="text" id="contexto" placeholder="Ex: TRE-SP, Súmula 15 do TSE...">
             </div>
         </div>
 
         <div id="aba-pedagogica" class="tab-content active">
-            <label>📝 Problema Jurídico (Enunciado):</label>
-            <textarea id="caso_ped" rows="3" placeholder="Qual foi a questão apresentada ao magistrado cursista?"></textarea>
+            <div class="flex-row" style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--cinza-borda); margin-bottom: 24px;">
+                <div class="input-group flex-1" style="margin-bottom: 0;">
+                    <label>👨‍🏫 Nome do Tutor/Professor:</label>
+                    <input type="text" id="tutor_nome" placeholder="Ex: Dr. Carlos Silva">
+                </div>
+                <div class="input-group flex-1" style="margin-bottom: 0;">
+                    <label>🏛️ Unidade / Instituição:</label>
+                    <input type="text" id="tutor_inst" placeholder="Ex: EJE/TSE - Polo 1">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>📝 Problema Jurídico (Enunciado):</label>
+                <textarea id="caso_ped" rows="2"></textarea>
+            </div>
+            <div class="input-group">
+                <label>✍️ Resposta do Cursista:</label>
+                <textarea id="resposta_ped" rows="4"></textarea>
+            </div>
             
-            <label>✍️ Resposta do Cursista:</label>
-            <textarea id="resposta_ped" rows="5" placeholder="Cole a resposta ou minuta elaborada..."></textarea>
-            
-            <button class="btn-analisar" onclick="iniciarAnalise('pedagogica')">Gerar Parecer Pedagógico</button>
+            <div class="input-group">
+                <button class="btn-upload" onclick="document.getElementById('normas_ped').click()">📎 Anexar Resoluções (Opcional PDF)</button>
+                <input type="file" id="normas_ped" accept=".pdf,.txt" multiple onchange="processarArquivos(this, 'tags_ped', 'texto_normas')" style="display:none;">
+                <div id="tags_ped" class="tags-container"></div>
+            </div>
+
+            <button class="btn-analisar" onclick="iniciarAnalise('pedagogica')">Executar Avaliação Humanizada</button>
         </div>
 
         <div id="aba-processos" class="tab-content">
-            <label>📄 Resumo dos Fatos (Opcional):</label>
-            <textarea id="fatos_proc" rows="2" placeholder="Ex: AIJE por abuso de poder econômico - Eleições 2026..."></textarea>
-            
-            <label>⚖️ Peça Processual (Anexar PDF ou Colar Texto):</label>
-            
-            <label class="file-upload" for="arquivo_pdf" id="label_arquivo">
-                📄 Clique aqui para anexar a Petição em PDF
-                <input type="file" id="arquivo_pdf" accept=".pdf,.txt" onchange="atualizarNomeArquivo(this)">
-            </label>
-            <div id="status_pdf" style="text-align:center; font-size:12px; color:var(--verde-sucesso); margin-bottom:10px; display:none;"></div>
+            <div class="input-group" style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid var(--cinza-borda);">
+                <label>👤 Perfil do Autor / Operador do Direito:</label>
+                <select id="autor_perfil">
+                    <option value="Magistrado/Juiz Eleitoral">Magistrado / Juiz Eleitoral (Foco em Decisão)</option>
+                    <option value="Assessor Jurídico">Assessor Jurídico (Foco em Triagem e Minuta)</option>
+                    <option value="Promotor Eleitoral">Promotor Eleitoral / MPE (Foco em Fiscalização/Acusação)</option>
+                    <option value="Advogado">Advogado (Foco em Defesa e Nulidades)</option>
+                    <option value="Servidor da Justiça Eleitoral">Servidor da Justiça Eleitoral (Foco Operacional)</option>
+                </select>
+            </div>
 
-            <textarea id="peca_proc" rows="4" placeholder="Ou se preferir, cole o conteúdo do processo aqui..."></textarea>
+            <div class="input-group">
+                <label>📄 Resumo dos Fatos ou Observações:</label>
+                <textarea id="obs_proc" rows="2" placeholder="O que eu devo procurar nesta AIJE/AIME?"></textarea>
+            </div>
             
-            <button class="btn-analisar" onclick="iniciarAnalise('processual')">Auditar Processo (Lex IA)</button>
+            <div class="input-group">
+                <label>⚖️ Peça Processual (Copie e cole ou Anexe PDFs):</label>
+                <textarea id="texto_proc" rows="3" placeholder="Cole o texto da peça aqui..."></textarea>
+            </div>
+
+            <div class="input-group">
+                <button class="btn-upload" onclick="document.getElementById('pecas_proc').click()">📎 Anexar Autos/Petições (PDF)</button>
+                <input type="file" id="pecas_proc" accept=".pdf,.txt" multiple onchange="processarArquivos(this, 'tags_proc', 'texto_pecas')" style="display:none;">
+                <div id="tags_proc" class="tags-container"></div>
+            </div>
+
+            <button class="btn-analisar" onclick="iniciarAnalise('processual')">Auditar Processo (Visão Direcionada)</button>
         </div>
 
-        <div id="loading" class="loading"></div>
-    </div>
-
-    <div id="checklist" class="checklist-container">
-        <div class="checklist-title">📚 BASE DE CONHECIMENTO ACIONADA</div>
-        <div id="checklist-grid" class="checklist-grid"></div>
+        <div id="terminal" class="terminal-container">
+            <div id="terminal-output"></div>
+            <div><span class="blinking-cursor">_</span></div>
+        </div>
     </div>
 
     <div id="resultado-card" class="resultado-card">
-        <div id="resultado-texto" class="resultado-texto"></div>
+        <div id="resultado-texto"></div>
     </div>
 </div>
 
 <script>
-    // Configuração do PDF.js
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-    let textoExtraidoPDF = "";
+    let textosAgregados = { texto_normas: "", texto_pecas: "" };
 
-    // Controle de Abas
-    function mudarAba(idAba, btn) {
+    function mudarAba(id, btn) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(idAba).classList.add('active');
+        document.getElementById(id).classList.add('active');
         btn.classList.add('active');
     }
 
-    // Leitura do Arquivo PDF
-    async function atualizarNomeArquivo(input) {
-        const file = input.files[0];
-        if (file) {
-            document.getElementById('label_arquivo').innerHTML = `📄 Arquivo Anexado: <strong>${file.name}</strong>`;
-            document.getElementById('status_pdf').style.display = 'block';
-            document.getElementById('status_pdf').innerText = "⏳ Extraindo texto do PDF, aguarde...";
-            
+    async function processarArquivos(input, containerId, storageKey) {
+        const files = Array.from(input.files);
+        const containerUI = document.getElementById(containerId);
+        containerUI.innerHTML = "";
+        textosAgregados[storageKey] = ""; 
+
+        for (const file of files) {
+            const tag = document.createElement('div');
+            tag.className = 'file-tag';
+            tag.innerHTML = `<div class="status" style="background:#fbbf24;"></div> ${file.name}`;
+            containerUI.appendChild(tag);
+
             try {
-                if(file.type === "application/pdf") {
-                    textoExtraidoPDF = await extrairTextoPDF(file);
+                let texto = "";
+                if (file.type === "application/pdf") {
+                    texto = await extrairTextoPDF(file);
                 } else {
-                    textoExtraidoPDF = await file.text(); // Para arquivos .txt
+                    texto = await file.text();
                 }
-                document.getElementById('status_pdf').innerText = "✅ Texto extraído com sucesso! Pronto para análise.";
-            } catch(e) {
-                document.getElementById('status_pdf').innerText = "❌ Erro ao ler o PDF. Tente colar o texto.";
-                document.getElementById('status_pdf').style.color = "red";
+                textosAgregados[storageKey] += `\n--- DOC: ${file.name} ---\n${texto}\n`;
+                tag.querySelector('.status').style.background = "var(--verde-sucesso)";
+            } catch (e) {
+                tag.querySelector('.status').style.background = "red";
             }
         }
     }
 
-    // Motor de Extração de PDF
     async function extrairTextoPDF(file) {
         const arrayBuffer = await file.arrayBuffer();
         const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
-        let fullText = "";
+        let totalText = "";
         for (let i = 1; i <= pdf.numPages; i++) {
             const page = await pdf.getPage(i);
-            const textContent = await page.getTextContent();
-            const pageText = textContent.items.map(item => item.str).join(' ');
-            fullText += pageText + "\\n";
+            const content = await page.getTextContent();
+            totalText += content.items.map(item => item.str).join(' ') + "\n";
         }
-        return fullText;
+        return totalText;
     }
 
-    const PROMPTS = {
-        pedagogica: `PROMPT: AVALIADOR TÉCNICO-PEDAGÓGICO - ELEIÇÕES 2026.
-Você é Lex, IA de suporte a Magistrados. Analise a resposta do cursista com rigor.
-REGRA DE CITAÇÃO: Cite a lei, artigo e parágrafo exatos sempre.
+    const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-ESTRUTURA OBRIGATÓRIA (Use Markdown):
-**1. Síntese do Caso**
-**2. Análise Técnica e Normativa** (Citar leis)
-**3. Jurisprudência Aplicável**
-**4. Inconsistências e Omissões**
-**5. Termômetro de IA:** Analise o padrão de escrita e indique se parece gerado por IA genérica.
-**6. Conclusão Formativa**`,
-
-        processual: `PROMPT: AUDITOR DE PROCESSOS ELEITORAIS (AIJE/AIME) - ELEIÇÕES 2026.
-Você é Lex, IA atuando como Assessor Chefe de um Juiz Eleitoral. Seu objetivo é dissecar petições ou defesas em busca de falhas técnicas.
-REGRA DE CITAÇÃO: Cite a lei, artigo e parágrafo exatos.
-
-ESTRUTURA OBRIGATÓRIA (Use Markdown):
-**1. Raio-X da Peça:** Resumo dos pedidos e partes.
-**2. Viabilidade e Adequação da Via Eleita:** O rito (AIJE/AIME/Representação) está correto? Há decadência?
-**3. Furos e Inconsistências:** Aponte fragilidades nos argumentos ou falta de provas documentais.
-**4. Radar Jurisprudencial (TSE):** Posição consolidada do TSE sobre este fato específico.
-**5. Sugestão de Encaminhamento (Despacho):** O que o magistrado deve decidir/despachar agora.`
-    };
-
-    const LEGISLACOES = ["Constituição Federal", "Código Eleitoral", "Lei 9.504/97", "LC 64/90", "Res. TSE (Propaganda/Registro)", "Jurisprudência do TSE", "Súmulas do TSE", "Resoluções TRE Local"];
+    async function logTerminal(message) {
+        const output = document.getElementById('terminal-output');
+        const container = document.getElementById('terminal');
+        const p = document.createElement('div');
+        output.appendChild(p);
+        p.innerHTML = `> [${new Date().toLocaleTimeString()}] ${message}`;
+        container.scrollTop = container.scrollHeight;
+        await sleep(500); 
+    }
 
     async function iniciarAnalise(tipo) {
-        const apiKey = document.getElementById('apiKey').value.trim();
-        const contexto = document.getElementById('contexto').value.trim();
-        let caso, textoPrincipal;
+        const apiKey = document.getElementById('apiKey').value;
+        if(!apiKey) return alert("⚠️ Insira a API Key para continuar.");
 
-        if (tipo === 'pedagogica') {
-            caso = document.getElementById('caso_ped').value.trim();
-            textoPrincipal = document.getElementById('resposta_ped').value.trim();
-        } else {
-            caso = document.getElementById('fatos_proc').value.trim();
-            // Junta o texto extraído do PDF com o que foi colado na caixa de texto
-            textoPrincipal = textoExtraidoPDF + "\\n\\n" + document.getElementById('peca_proc').value.trim();
-        }
-
-        if(!apiKey || textoPrincipal.trim() === "") {
-            return alert("⚠️ Preencha a API Key e insira o texto (colando ou anexando PDF).");
-        }
-
-        const loading = document.getElementById('loading');
+        const terminal = document.getElementById('terminal');
         const resultadoCard = document.getElementById('resultado-card');
-        const checklist = document.getElementById('checklist');
-        const resultadoTexto = document.getElementById('resultado-texto');
-
-        loading.style.display = 'block';
+        const contextoPrecedentes = document.getElementById('contexto').value.trim();
+        
+        document.getElementById('terminal-output').innerHTML = '';
+        terminal.style.display = 'block';
         resultadoCard.style.display = 'none';
-        checklist.style.display = 'none';
-        loading.innerText = "Lex conectado. Devorando os autos e analisando a jurisprudência...";
+
+        await logTerminal("Iniciando motor Lex Platform v5.0...");
+        
+        let promptFinal = "";
+        let instrucao = "";
+
+        if(tipo === 'pedagogica') {
+            const tutorNome = document.getElementById('tutor_nome').value || "Tutor Especialista";
+            const tutorInst = document.getElementById('tutor_inst').value || "Escola Judiciária Eleitoral";
+            
+            await logTerminal("Aba: Avaliação Pedagógica.");
+            await logTerminal(`Identidade assumida: ${tutorNome} (${tutorInst})`);
+            
+            instrucao = `Você é Lex, Avaliador Pedagógico do TSE. Avalie a resposta do cursista seguindo a estrutura técnica.
+            REGRA CRÍTICA: Não invente Súmulas ou Artigos. Se o cursista inventou, você DEVE apontar o erro duramente.
+            
+            PASSO 8 OBRIGATÓRIO - MENSAGEM FINAL DO MENTOR:
+            Redija uma carta final em 1ª pessoa, dirigida ao cursista. Seja empático, mas firme. 
+            - Avalie indícios de uso de IA (textos genéricos, falta de vivência prática). Se houver, alerte que a IA é boa para rascunho, mas a "alma" da decisão deve ser do magistrado.
+            - Caça a Alucinações: Se o cursista citou legislação inexistente, dê um alerta grave dizendo que isso anularia o processo no mundo real.
+            - Assine a carta como: "${tutorNome} - ${tutorInst}".`;
+
+            promptFinal = `PRECEDENTES LOCAIS: ${contextoPrecedentes}\nNORMAS ANEXADAS: ${textosAgregados.texto_normas}\nENUNCIADO: ${document.getElementById('caso_ped').value}\nRESPOSTA DO CURSISTA: ${document.getElementById('resposta_ped').value}`;
+        
+        } else {
+            const perfilAutor = document.getElementById('autor_perfil').value;
+            await logTerminal("Aba: Auditoria Processual (AIJE/AIME).");
+            await logTerminal(`Calibrando IA para a perspectiva de: ${perfilAutor}`);
+            
+            instrucao = `Você é Lex, IA atuando como consultor sênior. 
+            IMPORTANTE: Seu usuário atual tem o perfil de "${perfilAutor}". 
+            Adapte toda a sua análise, linguagem e caça de riscos processuais para interessar a este cargo específico. Se for advogado, foque em teses de defesa; se for juiz, foque na lisura e julgamento; se for promotor, foque em provas para condenação.`;
+            
+            const pecaCompleta = document.getElementById('texto_proc').value + "\n\n" + textosAgregados.texto_pecas;
+            promptFinal = `PRECEDENTES: ${contextoPrecedentes}\nFATOS: ${document.getElementById('obs_proc').value}\nAUTOS: ${pecaCompleta}`;
+        }
+
+        await logTerminal("Conectando ao modelo neural para descobrir rota de API...");
 
         try {
             const modelsReq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
             const modelsData = await modelsReq.json();
+            
             if (modelsData.error) throw new Error(modelsData.error.message);
 
             const availableModels = modelsData.models.filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent") && m.name.includes("gemini"));
-            if (availableModels.length === 0) throw new Error("Sem modelos disponíveis.");
+            if (availableModels.length === 0) throw new Error("Sem modelos disponíveis na sua chave.");
 
             let selectedModel = availableModels.find(m => m.name.includes("1.5-pro"))?.name || availableModels.find(m => m.name.includes("1.5-flash"))?.name || availableModels[0].name;
 
-            const instrucaoSistema = PROMPTS[tipo];
-            const promptDoUsuario = `[CONTEXTO/NORMAS]: ${contexto}\n[CASO/FATOS]: ${caso}\n[DOCUMENTO A SER ANALISADO (Pode ser originário de PDF)]: ${textoPrincipal}\n\nComando: Gere a análise seguindo rigorosamente a estrutura definida.`;
+            await logTerminal(`Canal seguro estabelecido com: ${selectedModel}`);
+            await logTerminal("Avaliando autenticidade do texto e estruturando parecer...");
 
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    system_instruction: { parts: [{ text: instrucaoSistema }] },
-                    contents: [{ parts: [{ text: promptDoUsuario }] }],
-                    generationConfig: { temperature: 0.1 }
+                    system_instruction: { parts: [{ text: instrucao }] },
+                    contents: [{ parts: [{ text: promptFinal }] }],
+                    generationConfig: { temperature: 0.2 } 
                 })
             });
-
+            
             const data = await response.json();
             if(data.error) throw new Error(data.error.message);
 
-            const textoGerado = data.candidates[0].content.parts[0].text;
-            
-            resultadoTexto.innerHTML = marked.parse(textoGerado);
-            renderizarChecklist(textoGerado);
-            
-            loading.style.display = 'none';
+            await logTerminal("Auditoria finalizada. Renderizando documento...");
+
+            document.getElementById('resultado-texto').innerHTML = marked.parse(data.candidates[0].content.parts[0].text);
             resultadoCard.style.display = 'block';
-            checklist.style.display = 'block';
-            resultadoCard.scrollIntoView({ behavior: 'smooth' });
+            resultadoCard.scrollIntoView({behavior: 'smooth'});
 
         } catch (e) {
-            alert("❌ Erro Lex: " + e.message);
-            loading.style.display = 'none';
+            await logTerminal(`<span style="color:red;">ERRO: ${e.message}</span>`);
         }
-    }
-
-    function renderizarChecklist(texto) {
-        const grid = document.getElementById('checklist-grid');
-        grid.innerHTML = '';
-        const textoLowerCase = texto.toLowerCase();
-        
-        LEGISLACOES.forEach(leg => {
-            let palavra = leg.split(' ')[0].toLowerCase();
-            if (leg.includes("9.504")) palavra = "9.504";
-            if (leg.includes("64/90")) palavra = "64/90";
-            if (leg.includes("Súmulas")) palavra = "súmula";
-            if (leg.includes("Jurisprudência")) palavra = "jurisprudência";
-            
-            const encontrado = textoLowerCase.includes(palavra);
-            const classAtivo = encontrado ? 'ativo' : '';
-            const checkIcon = encontrado ? '☑️' : '◻️';
-
-            grid.innerHTML += `
-                <div class="check-item ${classAtivo}">
-                    <span style="margin-right: 8px;">${checkIcon}</span> ${leg}
-                </div>
-            `;
-        });
     }
 </script>
 </body>
