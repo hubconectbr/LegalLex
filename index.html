@@ -18,12 +18,10 @@
         body { font-family: 'Inter', 'Segoe UI', sans-serif; background: var(--cinza-fundo); margin: 0; padding: 20px; color: #334155; }
         .container { max-width: 1100px; margin: 0 auto; }
         
-        /* Header Premium */
         .header { background: var(--azul-tse); color: white; padding: 25px; border-radius: 12px 12px 0 0; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .header h1 { margin: 0; font-size: 28px; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 10px;}
         .header p { color: #94a3b8; margin: 5px 0 0 0; font-size: 14px; }
 
-        /* Abas (Tabs) */
         .tabs { display: flex; background: var(--azul-claro); border-bottom: 2px solid var(--destaque); }
         .tab-btn { flex: 1; padding: 15px; border: none; background: transparent; color: #cbd5e1; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 15px; text-transform: uppercase; }
         .tab-btn:hover { background: rgba(255,255,255,0.05); color: white; }
@@ -43,7 +41,6 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Checklist */
         .checklist-container { display: none; background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 25px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
         .checklist-title { font-weight: bold; color: var(--azul-tse); margin-bottom: 15px; border-bottom: 2px solid var(--destaque); display: inline-block; padding-bottom: 5px; }
         .checklist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
@@ -126,7 +123,7 @@
         btn.classList.add('active');
     }
 
-    // Prompts Separados (O "Cérebro" de cada módulo)
+    // Prompts Separados
     const PROMPTS = {
         pedagogica: `PROMPT: AVALIADOR TÉCNICO-PEDAGÓGICO - ELEIÇÕES 2026.
 Você é Lex, IA de suporte a Magistrados. Analise a resposta do cursista com rigor.
@@ -182,7 +179,7 @@ ESTRUTURA OBRIGATÓRIA (Use Markdown):
 
         try {
             // Descoberta Inteligente de Modelo
-            const modelsReq = await fetch(\`https://generativelanguage.googleapis.com/v1beta/models?key=\${apiKey}\`);
+            const modelsReq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
             const modelsData = await modelsReq.json();
             if (modelsData.error) throw new Error(modelsData.error.message);
 
@@ -192,9 +189,9 @@ ESTRUTURA OBRIGATÓRIA (Use Markdown):
             let selectedModel = availableModels.find(m => m.name.includes("1.5-pro"))?.name || availableModels.find(m => m.name.includes("1.5-flash"))?.name || availableModels[0].name;
 
             const instrucaoSistema = PROMPTS[tipo];
-            const promptDoUsuario = \`[CONTEXTO/NORMAS]: \${contexto}\\n[CASO/FATOS]: \${caso}\\n[DOCUMENTO A SER ANALISADO]: \${textoPrincipal}\\n\\nComando: Gere a análise seguindo rigorosamente a estrutura definida.\`;
+            const promptDoUsuario = `[CONTEXTO/NORMAS]: ${contexto}\n[CASO/FATOS]: ${caso}\n[DOCUMENTO A SER ANALISADO]: ${textoPrincipal}\n\nComando: Gere a análise seguindo rigorosamente a estrutura definida.`;
 
-            const response = await fetch(\`https://generativelanguage.googleapis.com/v1beta/\${selectedModel}:generateContent?key=\${apiKey}\`, {
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -239,11 +236,11 @@ ESTRUTURA OBRIGATÓRIA (Use Markdown):
             const classAtivo = encontrado ? 'ativo' : '';
             const checkIcon = encontrado ? '☑️' : '◻️';
 
-            grid.innerHTML += \`
-                <div class="check-item \${classAtivo}">
-                    <span style="margin-right: 8px;">\${checkIcon}</span> \${leg}
+            grid.innerHTML += `
+                <div class="check-item ${classAtivo}">
+                    <span style="margin-right: 8px;">${checkIcon}</span> ${leg}
                 </div>
-            \`;
+            `;
         });
     }
 </script>
