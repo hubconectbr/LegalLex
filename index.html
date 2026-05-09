@@ -4,7 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lex | LegalTech Eleitoral</title>
+    
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    
     <style>
         :root {
             --azul-tse: #0f172a;
@@ -31,9 +34,14 @@
         
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; background: #f1f5f9; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0;}
         label { font-weight: 600; color: var(--azul-tse); display: block; margin-bottom: 8px; font-size: 13px; text-transform: uppercase; }
-        input, textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px; font-size: 14px; box-sizing: border-box; background: #fff; transition: 0.3s; }
+        input[type="text"], input[type="password"], textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 12px; font-size: 14px; box-sizing: border-box; background: #fff; transition: 0.3s; }
         input:focus, textarea:focus { outline: none; border-color: var(--destaque); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1); }
         
+        /* Estilo para input de arquivo */
+        .file-upload { display: block; width: 100%; border: 2px dashed #cbd5e1; padding: 20px; text-align: center; background: #f8fafc; border-radius: 8px; cursor: pointer; color: #64748b; font-weight: bold; transition: 0.3s; margin-bottom: 10px; box-sizing: border-box;}
+        .file-upload:hover { border-color: var(--destaque); background: #eff6ff; color: var(--destaque); }
+        input[type="file"] { display: none; }
+
         .btn-analisar { background: var(--destaque); color: white; border: none; padding: 16px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 16px; margin-top: 15px; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.3); }
         .btn-analisar:hover { background: #2563eb; transform: translateY(-2px); }
 
@@ -45,7 +53,6 @@
         .checklist-title { font-weight: bold; color: var(--azul-tse); margin-bottom: 15px; border-bottom: 2px solid var(--destaque); display: inline-block; padding-bottom: 5px; }
         .checklist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
         .check-item { display: flex; align-items: center; font-size: 13px; color: #475569; padding: 10px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; transition: 0.3s; }
-        .check-item input { width: auto; margin-right: 10px; accent-color: var(--verde-sucesso); }
         .check-item.ativo { background: #ecfdf5; border-color: var(--verde-sucesso); color: #065f46; font-weight: 600; }
 
         .resultado-card { display: none; background: white; padding: 35px; border-radius: 12px; border-left: 8px solid var(--destaque); box-shadow: 0 10px 25px rgba(0,0,0,0.08); }
@@ -76,8 +83,8 @@
                 <input type="password" id="apiKey" placeholder="Insira sua chave de acesso...">
             </div>
             <div>
-                <label>📁 Base Normativa / Contexto Local:</label>
-                <input type="text" id="contexto" placeholder="Ex: TRE-SP. Resolução TSE 23.610. Cole textos curtos de leis se necessário.">
+                <label>📁 Base Normativa Local / TRE:</label>
+                <input type="text" id="contexto" placeholder="Ex: TRE-SP. Resolução TSE 23.610.">
             </div>
         </div>
 
@@ -93,10 +100,17 @@
 
         <div id="aba-processos" class="tab-content">
             <label>📄 Resumo dos Fatos (Opcional):</label>
-            <textarea id="fatos_proc" rows="2" placeholder="Ex: Prefeito acusado de abuso de poder econômico por showmício..."></textarea>
+            <textarea id="fatos_proc" rows="2" placeholder="Ex: AIJE por abuso de poder econômico - Eleições 2026..."></textarea>
             
-            <label>⚖️ Peça Processual (Petição/Defesa/Decisão):</label>
-            <textarea id="peca_proc" rows="6" placeholder="Cole o conteúdo da petição inicial, defesa ou decisão a ser analisada..."></textarea>
+            <label>⚖️ Peça Processual (Anexar PDF ou Colar Texto):</label>
+            
+            <label class="file-upload" for="arquivo_pdf" id="label_arquivo">
+                📄 Clique aqui para anexar a Petição em PDF
+                <input type="file" id="arquivo_pdf" accept=".pdf,.txt" onchange="atualizarNomeArquivo(this)">
+            </label>
+            <div id="status_pdf" style="text-align:center; font-size:12px; color:var(--verde-sucesso); margin-bottom:10px; display:none;"></div>
+
+            <textarea id="peca_proc" rows="4" placeholder="Ou se preferir, cole o conteúdo do processo aqui..."></textarea>
             
             <button class="btn-analisar" onclick="iniciarAnalise('processual')">Auditar Processo (Lex IA)</button>
         </div>
@@ -115,6 +129,11 @@
 </div>
 
 <script>
+    // Configuração do PDF.js
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+
+    let textoExtraidoPDF = "";
+
     // Controle de Abas
     function mudarAba(idAba, btn) {
         document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -123,31 +142,65 @@
         btn.classList.add('active');
     }
 
-    // Prompts Separados
+    // Leitura do Arquivo PDF
+    async function atualizarNomeArquivo(input) {
+        const file = input.files[0];
+        if (file) {
+            document.getElementById('label_arquivo').innerHTML = `📄 Arquivo Anexado: <strong>${file.name}</strong>`;
+            document.getElementById('status_pdf').style.display = 'block';
+            document.getElementById('status_pdf').innerText = "⏳ Extraindo texto do PDF, aguarde...";
+            
+            try {
+                if(file.type === "application/pdf") {
+                    textoExtraidoPDF = await extrairTextoPDF(file);
+                } else {
+                    textoExtraidoPDF = await file.text(); // Para arquivos .txt
+                }
+                document.getElementById('status_pdf').innerText = "✅ Texto extraído com sucesso! Pronto para análise.";
+            } catch(e) {
+                document.getElementById('status_pdf').innerText = "❌ Erro ao ler o PDF. Tente colar o texto.";
+                document.getElementById('status_pdf').style.color = "red";
+            }
+        }
+    }
+
+    // Motor de Extração de PDF
+    async function extrairTextoPDF(file) {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise;
+        let fullText = "";
+        for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map(item => item.str).join(' ');
+            fullText += pageText + "\\n";
+        }
+        return fullText;
+    }
+
     const PROMPTS = {
         pedagogica: `PROMPT: AVALIADOR TÉCNICO-PEDAGÓGICO - ELEIÇÕES 2026.
 Você é Lex, IA de suporte a Magistrados. Analise a resposta do cursista com rigor.
 REGRA DE CITAÇÃO: Cite a lei, artigo e parágrafo exatos sempre.
-NOVIDADE: Avalie a originalidade do texto.
 
 ESTRUTURA OBRIGATÓRIA (Use Markdown):
 **1. Síntese do Caso**
 **2. Análise Técnica e Normativa** (Citar leis)
 **3. Jurisprudência Aplicável**
 **4. Inconsistências e Omissões**
-**5. Termômetro de IA (Autenticidade):** Analise o padrão de escrita do cursista. Indique educadamente se o texto tem características fortes de ter sido gerado por IA genérica (listas excessivas, falta de alma jurídica) e sugira como o cursista pode colocar mais de sua vivência prática.
+**5. Termômetro de IA:** Analise o padrão de escrita e indique se parece gerado por IA genérica.
 **6. Conclusão Formativa**`,
 
         processual: `PROMPT: AUDITOR DE PROCESSOS ELEITORAIS (AIJE/AIME) - ELEIÇÕES 2026.
-Você é Lex, IA atuando como Assessor Chefe de um Juiz Eleitoral. Seu objetivo é dissecar petições, defesas ou minutas em busca de falhas técnicas.
+Você é Lex, IA atuando como Assessor Chefe de um Juiz Eleitoral. Seu objetivo é dissecar petições ou defesas em busca de falhas técnicas.
 REGRA DE CITAÇÃO: Cite a lei, artigo e parágrafo exatos.
 
 ESTRUTURA OBRIGATÓRIA (Use Markdown):
 **1. Raio-X da Peça:** Resumo dos pedidos e partes.
-**2. Viabilidade e Adequação da Via Eleita:** O rito (AIJE/AIME/Representação) está correto? O prazo decaiu?
-**3. Furos e Inconsistências:** Aponte fragilidades nos argumentos, falta de provas documentais citadas ou pedidos juridicamente impossíveis.
-**4. Radar Jurisprudencial (TSE 2026):** Qual a posição consolidada do TSE sobre este fato específico? A peça está contrariando alguma súmula?
-**5. Sugestão de Encaminhamento:** O que o magistrado deve despachar agora? (Ex: Extinção sem mérito, abrir vistas ao MPE, deferir liminar).`
+**2. Viabilidade e Adequação da Via Eleita:** O rito (AIJE/AIME/Representação) está correto? Há decadência?
+**3. Furos e Inconsistências:** Aponte fragilidades nos argumentos ou falta de provas documentais.
+**4. Radar Jurisprudencial (TSE):** Posição consolidada do TSE sobre este fato específico.
+**5. Sugestão de Encaminhamento (Despacho):** O que o magistrado deve decidir/despachar agora.`
     };
 
     const LEGISLACOES = ["Constituição Federal", "Código Eleitoral", "Lei 9.504/97", "LC 64/90", "Res. TSE (Propaganda/Registro)", "Jurisprudência do TSE", "Súmulas do TSE", "Resoluções TRE Local"];
@@ -162,10 +215,13 @@ ESTRUTURA OBRIGATÓRIA (Use Markdown):
             textoPrincipal = document.getElementById('resposta_ped').value.trim();
         } else {
             caso = document.getElementById('fatos_proc').value.trim();
-            textoPrincipal = document.getElementById('peca_proc').value.trim();
+            // Junta o texto extraído do PDF com o que foi colado na caixa de texto
+            textoPrincipal = textoExtraidoPDF + "\\n\\n" + document.getElementById('peca_proc').value.trim();
         }
 
-        if(!apiKey || !textoPrincipal) return alert("⚠️ Preencha a API Key e o texto principal (Resposta ou Peça).");
+        if(!apiKey || textoPrincipal.trim() === "") {
+            return alert("⚠️ Preencha a API Key e insira o texto (colando ou anexando PDF).");
+        }
 
         const loading = document.getElementById('loading');
         const resultadoCard = document.getElementById('resultado-card');
@@ -175,10 +231,9 @@ ESTRUTURA OBRIGATÓRIA (Use Markdown):
         loading.style.display = 'block';
         resultadoCard.style.display = 'none';
         checklist.style.display = 'none';
-        loading.innerText = "Lex conectado. Processando dados e jurisprudência...";
+        loading.innerText = "Lex conectado. Devorando os autos e analisando a jurisprudência...";
 
         try {
-            // Descoberta Inteligente de Modelo
             const modelsReq = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
             const modelsData = await modelsReq.json();
             if (modelsData.error) throw new Error(modelsData.error.message);
@@ -189,7 +244,7 @@ ESTRUTURA OBRIGATÓRIA (Use Markdown):
             let selectedModel = availableModels.find(m => m.name.includes("1.5-pro"))?.name || availableModels.find(m => m.name.includes("1.5-flash"))?.name || availableModels[0].name;
 
             const instrucaoSistema = PROMPTS[tipo];
-            const promptDoUsuario = `[CONTEXTO/NORMAS]: ${contexto}\n[CASO/FATOS]: ${caso}\n[DOCUMENTO A SER ANALISADO]: ${textoPrincipal}\n\nComando: Gere a análise seguindo rigorosamente a estrutura definida.`;
+            const promptDoUsuario = `[CONTEXTO/NORMAS]: ${contexto}\n[CASO/FATOS]: ${caso}\n[DOCUMENTO A SER ANALISADO (Pode ser originário de PDF)]: ${textoPrincipal}\n\nComando: Gere a análise seguindo rigorosamente a estrutura definida.`;
 
             const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/${selectedModel}:generateContent?key=${apiKey}`, {
                 method: 'POST',
